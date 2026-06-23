@@ -1,23 +1,46 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>ESP32 Kontrol Paneli</title>
 </head>
 <body>
-    <h1>ESP32 Durum Ekranı</h1>
-    <div id="durum">Yükleniyor...</div>
+    <h1>ESP32 Durum Kontrolü</h1>
+    <div id="durum">Durum yükleniyor...</div>
+    <br>
+    
+    <button onclick="durumDegistir('Aktif')">Aktif Yap</button>
+    <button onclick="durumDegistir('Pasif')">Pasif Yap</button>
 
     <script>
-        // Firebase RTDB REST API linkin
-        // URL'ni bu şekilde düzelt:
-const url = "https://diafon-tetik12-default-rtdb.firebaseio.com/Deneme1/Esp32-01/Durum.json";
+        // Veritabanı URL'n
+        const url = "https://diafon-tetik12-default-rtdb.firebaseio.com/Deneme1/Esp32-01/Durum.json";
 
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('durum').innerText = "Cihaz Durumu: " + data;
+        // Veriyi çekme fonksiyonu
+        function durumuGoster() {
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('durum').innerText = "Güncel Durum: " + data;
+                })
+                .catch(error => console.error('Hata:', error));
+        }
+
+        // Veriyi değiştirme (PUT) fonksiyonu
+        function durumDegistir(yeniDurum) {
+            fetch(url, {
+                method: 'PUT',
+                body: JSON.stringify(yeniDurum)
+            })
+            .then(() => {
+                alert("Durum " + yeniDurum + " olarak ayarlandı!");
+                durumuGoster(); // Güncel durumu tekrar çek ve ekranda göster
             })
             .catch(error => console.error('Hata:', error));
+        }
+
+        // Sayfa açıldığında ilk veriyi çek
+        durumuGoster();
     </script>
 </body>
 </html>
