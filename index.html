@@ -5,41 +5,71 @@
     <title>ESP32 Kontrol Paneli</title>
 </head>
 <body>
-    <h1>ESP32 Durum Kontrolü</h1>
-    <div id="durum">Durum yükleniyor...</div>
-    <br>
-    
-    <button onclick="durumDegistir('Aktif')">Aktif Yap</button>
-    <button onclick="durumDegistir('Pasif')">Pasif Yap</button>
 
-    <script>
-        // Veritabanı URL'n
-        const url = "https://diafon-tetik12-default-rtdb.europe-west1.firebasedatabase.app/Deneme1/Esp32_01/Durum.json";
-        // Veriyi çekme fonksiyonu
-        function durumuGoster() {
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('durum').innerText = "Güncel Durum: " + data;
-                })
-                .catch(error => console.error('Hata:', error));
-        }
+<h1>ESP32 Durum Kontrolü</h1>
 
-        // Veriyi değiştirme (PUT) fonksiyonu
-        function durumDegistir(yeniDurum) {
-            fetch(url, {
-                method: 'PUT',
-                body: JSON.stringify(yeniDurum)
+<div id="durum">Durum yükleniyor...</div>
+<br>
+
+<button onclick="durumDegistir(1)">Aktif Yap</button>
+<button onclick="durumDegistir(0)">Pasif Yap</button>
+
+<script>
+
+    // Okuma URL'si
+    const readUrl =
+        "https://diafon-tetik12-default-rtdb.europe-west1.firebasedatabase.app/Deneme1/Esp32_01/Durum.json";
+
+    // Yazma URL'si (cevap dönmez)
+    const writeUrl =
+        "https://diafon-tetik12-default-rtdb.europe-west1.firebasedatabase.app/Deneme1/Esp32_01/Durum.json?print=silent";
+
+
+    // Sayfa açıldığında bir kez mevcut durumu oku
+    function durumuGoster() {
+
+        fetch(readUrl)
+            .then(response => response.json())
+            .then(data => {
+
+                if (data == 1)
+                    document.getElementById("durum").innerText = "Güncel Durum: Aktif";
+                else if (data == 0)
+                    document.getElementById("durum").innerText = "Güncel Durum: Pasif";
+                else
+                    document.getElementById("durum").innerText = "Güncel Durum: Bilinmiyor";
+
             })
-            .then(() => {
-                alert("Durum " + yeniDurum + " olarak ayarlandı!");
-                durumuGoster(); // Güncel durumu tekrar çek ve ekranda göster
-            })
-            .catch(error => console.error('Hata:', error));
-        }
+            .catch(error => console.error("Hata:", error));
 
-        // Sayfa açıldığında ilk veriyi çek
-        durumuGoster();
-    </script>
+    }
+
+
+    // Durumu değiştir
+    function durumDegistir(yeniDurum) {
+
+        fetch(writeUrl, {
+            method: "PUT",
+            body: JSON.stringify(yeniDurum)
+        })
+        .then(() => {
+
+            // Firebase'den tekrar okumaya gerek yok
+            if (yeniDurum == 1)
+                document.getElementById("durum").innerText = "Güncel Durum: Aktif";
+            else
+                document.getElementById("durum").innerText = "Güncel Durum: Pasif";
+
+        })
+        .catch(error => console.error("Hata:", error));
+
+    }
+
+
+    // Sayfa açıldığında bir kez çalıştır
+    durumuGoster();
+
+</script>
+
 </body>
 </html>
