@@ -46,15 +46,22 @@
         }
 
         // Yazıyı Firebase'den Çek
-        function masaliOku() {
-            fetch(baseUrl)
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById("metinAlani").value = data;
-                    document.getElementById("durum").innerText = "Başarılı: Masal veritabanından çekildi.";
-                })
-                .catch(error => console.error("Hata:", error));
-        }
+        // Yazıyı Firebase'den Çek ve Alert ile Göster
+function masaliOku() {
+    fetch(baseUrl)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("metinAlani").value = data;
+            document.getElementById("durum").innerText = "Başarılı: Masal veritabanından çekildi.";
+            
+            // İşte eklediğimiz alert kısmı:
+            alert("Çekilen Veri: \n\n" + data);
+        })
+        .catch(error => {
+            console.error("Hata:", error);
+            alert("Bir hata oluştu: " + error);
+        });
+}
     </script>
 </body>
 </html>
