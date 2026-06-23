@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ESP32 Kontrol Paneli</title>
+</head>
+<body>
+    <h1>ESP32 Durum Ekranı</h1>
+    <div id="durum">Yükleniyor...</div>
+
+    <script>
+        // Firebase RTDB REST API linkin
+        const url = "https://PROJE_ID.firebaseio.com/asCihazlar/ESP32a_02/Durum.json";
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('durum').innerText = "Cihaz Durumu: " + data;
+            })
+            .catch(error => console.error('Hata:', error));
+    </script>
+</body>
+</html>
