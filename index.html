@@ -13,63 +13,36 @@
 
 <button onclick="durumDegistir(1)">Aktif Yap</button>
 <button onclick="durumDegistir(0)">Pasif Yap</button>
-
 <script>
+    // URL'lerin aynı, sadece string olarak gönderiyoruz
+    const readUrl = "https://diafon-tetik12-default-rtdb.europe-west1.firebasedatabase.app/Deneme1/Esp32_01/Durum.json";
+    const writeUrl = "https://diafon-tetik12-default-rtdb.europe-west1.firebasedatabase.app/Deneme1/Esp32_01/Durum.json?print=silent";
 
-    // Okuma URL'si
-    const readUrl =
-        "https://diafon-tetik12-default-rtdb.europe-west1.firebasedatabase.app/Deneme1/Esp32_01/Durum.json";
-
-    // Yazma URL'si (cevap dönmez)
-    const writeUrl =
-        "https://diafon-tetik12-default-rtdb.europe-west1.firebasedatabase.app/Deneme1/Esp32_01/Durum.json?print=silent";
-
-
-    // Sayfa açıldığında bir kez mevcut durumu oku
     function durumuGoster() {
-
         fetch(readUrl)
             .then(response => response.json())
             .then(data => {
-
-                if (data == 1)
-                    document.getElementById("durum").innerText = "Güncel Durum: Aktif";
-                else if (data == 0)
-                    document.getElementById("durum").innerText = "Güncel Durum: Pasif";
-                else
-                    document.getElementById("durum").innerText = "Güncel Durum: Bilinmiyor";
-
+                // String kontrolü: Veri "Aktif" veya "Pasif" gelebilir
+                document.getElementById("durum").innerText = "Güncel Durum: " + (data ? data : "Bilinmiyor");
             })
             .catch(error => console.error("Hata:", error));
-
     }
 
-
-    // Durumu değiştir
     function durumDegistir(yeniDurum) {
-
+        // String gönderirken JSON.stringify düzgün tırnak ekler, sorunsuz çalışır
         fetch(writeUrl, {
             method: "PUT",
-            body: JSON.stringify(yeniDurum)
+            body: JSON.stringify(yeniDurum) 
         })
         .then(() => {
-
-            // Firebase'den tekrar okumaya gerek yok
-            if (yeniDurum == 1)
-                document.getElementById("durum").innerText = "Güncel Durum: Aktif";
-            else
-                document.getElementById("durum").innerText = "Güncel Durum: Pasif";
-
+            document.getElementById("durum").innerText = "Güncel Durum: " + yeniDurum;
         })
         .catch(error => console.error("Hata:", error));
-
     }
 
-
-    // Sayfa açıldığında bir kez çalıştır
     durumuGoster();
-
 </script>
+
 
 </body>
 </html>
